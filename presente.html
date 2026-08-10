@@ -13,8 +13,21 @@ body{margin:0;overflow:hidden;font-family:Arial;background:#ffe6f0;}
 .estrela{position:absolute;width:3px;height:3px;background:white;border-radius:50%;opacity:0.8;animation:piscar 2s infinite alternate;}
 @keyframes piscar{0%{opacity:0.2;}100%{opacity:1;}}
 
-h1{text-align:center;margin-top:40px;color:#ff1a75;}
-p{text-align:center;font-size:20px;margin-bottom:30px;}
+.mensagem-centro{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+  pointer-events: none;
+  background: rgba(255, 230, 240, 0.65);
+  padding: 20px;
+  border-radius: 15px;
+  backdrop-filter: blur(3px);
+}
+h1{margin:0 0 10px 0;color:#ff1a75;}
+p{font-size:20px;margin:0;}
 
 .midia{position:absolute;width:120px;height:120px;border-radius:12px;object-fit:cover;cursor:pointer;transition:transform 0.3s;box-shadow:0 4px 8px rgba(0,0,0,0.2);}
 .midia:hover{transform:scale(1.1);z-index:20;}
@@ -25,7 +38,7 @@ p{text-align:center;font-size:20px;margin-bottom:30px;}
 .viewer img, .viewer video{max-width:90%;max-height:80%;border-radius:10px;}
 .voltar{position:absolute;top:20px;left:20px;font-size:40px;color:white;cursor:pointer;z-index:1001;}
 
-/* Botão de Som */
+/* Botão de Som no Canto do Vídeo */
 .btn-som{
   position:absolute;
   top:20px;
@@ -58,16 +71,18 @@ p{text-align:center;font-size:20px;margin-bottom:30px;}
 
 <div id="primeiroTexto">Nosso Primeiro Encontro ❤️</div>
 
-<h1>Edilane Santos ❤️</h1>
+<div class="mensagem-centro">
+  <h1>Edilane Santos ❤️</h1>
+  <p>
+  Com muito carinho ❤️<br><br>
+  <strong>De Alisson Da Cruz Silva</strong><br>
+  para<br>
+  <strong>Edilane Santos</strong><br><br>
+  Obrigado por ser minha namorada e fazer minha vida mais feliz.
+  </p>
+</div>
 
-<p>
-Com muito carinho ❤️<br><br>
-<strong>De Alisson Da Cruz Silva</strong><br>
-para<br>
-<strong>Edilane Santos</strong><br><br>
-Obrigado por ser minha namorada e fazer minha vida mais feliz.
-</p>
-
+<!-- 13 FOTOS -->
 <img src="foto1.jpg" class="midia foto">
 <img src="foto2.jpg" class="midia foto">
 <img src="foto3.jpg" class="midia foto">
@@ -82,6 +97,7 @@ Obrigado por ser minha namorada e fazer minha vida mais feliz.
 <img src="foto12.jpg" class="midia foto">
 <img src="foto13.jpg" class="midia foto">
 
+<!-- 3 VÍDEOS (Tocando em loop e flutuando sem som) -->
 <video src="video1.mp4" class="midia video" autoplay loop muted playsinline></video>
 <video src="video2.mp4" class="midia video" autoplay loop muted playsinline></video>
 <video src="video3.mp4" class="midia video" autoplay loop muted playsinline></video>
@@ -198,27 +214,15 @@ btnSom.style.display="none"
 videoGrande.pause()
 imagemGrande.src=item.src
 imagemGrande.style.display="block"
-if(musicaIniciada) musica.play()
 } else if(item.tagName.toLowerCase() === "video"){
 imagemGrande.style.display="none"
 videoGrande.src=item.src
-videoGrande.currentTime = item.currentTime
-videoGrande.muted = true
+videoGrande.currentTime = item.currentTime // Sincroniza do exato momento onde estava flutuando
+videoGrande.muted = true // Inicia mudo por padrão no viewer
+btnSom.innerHTML = "🔇"
+btnSom.style.display="flex"
 videoGrande.style.display="block"
 videoGrande.play()
-
-videoGrande.onloadedmetadata = function() {
-let temAudio = videoGrande.mozHasAudio || 
-               Boolean(videoGrande.webkitAudioDecodedByteCount) || 
-               Boolean(videoGrande.audioTracks && videoGrande.audioTracks.length);
-
-if (temAudio) {
-  btnSom.innerHTML = "🔇"
-  btnSom.style.display = "flex"
-} else {
-  btnSom.style.display = "none"
-}
-}
 }
 
 if(item.classList.contains("primeiro")){
@@ -240,11 +244,11 @@ function alternarSom(){
 if(videoGrande.muted){
 videoGrande.muted = false
 btnSom.innerHTML = "🔊"
-musica.pause()
+musica.pause() // Pausa a música de fundo para ouvir o áudio do vídeo
 } else {
 videoGrande.muted = true
 btnSom.innerHTML = "🔇"
-if(musicaIniciada) musica.play()
+if(musicaIniciada) musica.play() // Retoma a música de fundo
 }
 }
 
